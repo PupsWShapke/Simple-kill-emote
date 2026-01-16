@@ -3,7 +3,6 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
--- === ПОЛНЫЙ СПИСОК KILL EMOTES ===
 local KillEmotes = {
     "None", "Vampire", "Impostor", "Rudolph's Revenge", "ACME", "Avra Kadoovra",
     "Barbarian", "Blood Sugar", "Frostbound Prison", "Curb Stomp", "Frost Breath",
@@ -15,12 +14,10 @@ local KillEmotes = {
     "Tinsel Strangie", "Wrap It Up", "Cauldron", "Bee", "Pollen Overload", "Glacial Burial"
 }
 
--- === ПЕРЕМЕННЫЕ ===
 local SelectedEmote = "None"
 local SelectedSlot = 1
 local SaveCurrent = false
 
--- === СОЗДАНИЕ GUI ===
 local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
 ScreenGui.Name = "SimpleKillEmoteMenu"
 ScreenGui.ResetOnSpawn = false
@@ -34,12 +31,11 @@ MainFrame.Active = true
 MainFrame.Draggable = true
 Instance.new("UICorner", MainFrame)
 
--- Радужный заголовок
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.Text = "Simple kill emote"
 Title.TextColor3 = Color3.new(1, 1, 1)
-Title.TextSize = 18 -- Унифицированный размер для заголовка
+Title.TextSize = 18
 Title.Font = Enum.Font.GothamBold
 Title.BackgroundTransparency = 1
 
@@ -47,16 +43,14 @@ RunService.RenderStepped:Connect(function()
     Title.TextColor3 = Color3.fromHSV(tick() % 5 / 5, 0.8, 1)
 end)
 
--- Общие настройки для кнопок
 local function StyleButton(btn)
     btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     btn.TextColor3 = Color3.new(1, 1, 1)
     btn.Font = Enum.Font.GothamMedium
-    btn.TextSize = 14 -- Единый размер шрифта для всех элементов
+    btn.TextSize = 14
     Instance.new("UICorner", btn)
 end
 
--- ДРОПДАУН ЭМОЦИЙ
 local EmoteBtn = Instance.new("TextButton", MainFrame)
 EmoteBtn.Size = UDim2.new(0.9, 0, 0, 35)
 EmoteBtn.Position = UDim2.new(0.05, 0, 0, 60)
@@ -80,7 +74,7 @@ for _, name in pairs(KillEmotes) do
     b.Text = name
     b.TextColor3 = Color3.new(0.8, 0.8, 0.8)
     b.Font = Enum.Font.Gotham
-    b.TextSize = 14 -- Тот же размер для списка
+    b.TextSize = 14
     b.ZIndex = 11
     b.MouseButton1Click:Connect(function()
         SelectedEmote = name
@@ -94,7 +88,6 @@ EmoteBtn.MouseButton1Click:Connect(function()
     EmoteListFrame.Visible = not EmoteListFrame.Visible
 end)
 
--- ДРОПДАУН СЛОТОВ
 local SlotBtn = Instance.new("TextButton", MainFrame)
 SlotBtn.Size = UDim2.new(0.9, 0, 0, 35)
 SlotBtn.Position = UDim2.new(0.05, 0, 0, 105)
@@ -130,7 +123,6 @@ SlotBtn.MouseButton1Click:Connect(function()
     EmoteListFrame.Visible = false
 end)
 
--- ТОГЛ СОХРАНЕНИЯ
 local SaveBtn = Instance.new("TextButton", MainFrame)
 SaveBtn.Size = UDim2.new(0.9, 0, 0, 35)
 SaveBtn.Position = UDim2.new(0.05, 0, 0, 150)
@@ -143,23 +135,6 @@ SaveBtn.MouseButton1Click:Connect(function()
     SaveBtn.TextColor3 = SaveCurrent and Color3.new(0, 1, 0) or Color3.new(1, 1, 1)
 end)
 
--- КНОПКИ ДЕЙСТВИЯ
-local ApplyBtn = Instance.new("TextButton", MainFrame)
-ApplyBtn.Size = UDim2.new(0.9, 0, 0, 45)
-ApplyBtn.Position = UDim2.new(0.05, 0, 0, 210)
-ApplyBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 120)
-ApplyBtn.Text = "Apply emotes"
-StyleButton(ApplyBtn)
-ApplyBtn.Font = Enum.Font.GothamBold -- Жирный для акцента
-
-local CopyBtn = Instance.new("TextButton", MainFrame)
-CopyBtn.Size = UDim2.new(0.9, 0, 0, 45)
-CopyBtn.Position = UDim2.new(0.05, 0, 0, 265)
-CopyBtn.Text = "Copy as a script"
-StyleButton(CopyBtn)
-CopyBtn.Font = Enum.Font.GothamBold
-
--- Логика применения (GetFinalTable функция такая же)
 local function GetFinalTable()
     local res = {{"Emote", "None"}, {"Emote", "None"}, {"Emote", "None"}, {"Emote", "None"}, true, true, true, true}
     if SaveCurrent then
@@ -169,6 +144,21 @@ local function GetFinalTable()
     res[SelectedSlot] = {"KillEmote", SelectedEmote}
     return res
 end
+
+local ApplyBtn = Instance.new("TextButton", MainFrame)
+ApplyBtn.Size = UDim2.new(0.9, 0, 0, 45)
+ApplyBtn.Position = UDim2.new(0.05, 0, 0, 210)
+ApplyBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 120)
+ApplyBtn.Text = "Apply emotes"
+StyleButton(ApplyBtn)
+ApplyBtn.Font = Enum.Font.GothamBold
+
+local CopyBtn = Instance.new("TextButton", MainFrame)
+CopyBtn.Size = UDim2.new(0.9, 0, 0, 45)
+CopyBtn.Position = UDim2.new(0.05, 0, 0, 265)
+CopyBtn.Text = "Copy as a script"
+StyleButton(CopyBtn)
+CopyBtn.Font = Enum.Font.GothamBold
 
 ApplyBtn.MouseButton1Click:Connect(function()
     LocalPlayer.Data.EmoteEquipped.Value = HttpService:JSONEncode(GetFinalTable())
